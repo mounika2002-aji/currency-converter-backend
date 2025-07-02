@@ -3,17 +3,36 @@ const cors = require('cors');
 const app = express();
 const PORT = 5000;
 
-// Allow frontend to connect
 app.use(cors());
 
 app.get('/api/convert', (req, res) => {
+  const to = req.query.to?.toUpperCase();
+  const amount = parseFloat(req.query.amount);
+
   const mockRates = {
     USD: 0.012,
-    EUR: 0.01
+    EUR: 0.011,
+    GBP: 0.0095,
+    AUD: 0.018,
+    CAD: 0.016,
+    JPY: 1.75
   };
+
+  if (!to || isNaN(amount) || !mockRates[to]) {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid currency or amount'
+    });
+  }
+
+  const rate = mockRates[to];
+  const converted = (amount * rate).toFixed(2);
+
   res.json({
     success: true,
-    rates: mockRates
+    rate: rate,
+    converted: converted,
+    currency: to
   });
 });
 
