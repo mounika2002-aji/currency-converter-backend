@@ -14,18 +14,18 @@ app.get('/api/convert', async (req, res) => {
     const rates = response.data.rates;
 
     if (!rates[from] || !rates[to]) {
-      return res.status(400).json({ error: "Conversion rate not available" });
+      return res.status(400).json({ success: false, error: "Invalid currencies" });
     }
 
-    const eurToFrom = rates[from];
-    const eurToTo = rates[to];
-    const rate = eurToTo / eurToFrom;
+    // Calculate conversion rate using EUR as the base
+    const rate = rates[to] / rates[from];
 
-    res.json({ rate });
-  } catch (err) {
-    res.status(500).json({ error: "Fixer API error" });
+    // ✅ Send correct format expected by frontend
+    res.json({ success: true, rate });
+  } catch (error) {
+    res.status(500).json({ success: false, error: "Fixer API failed" });
   }
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Backend running on port ${PORT}`));
