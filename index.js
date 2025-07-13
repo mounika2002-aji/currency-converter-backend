@@ -5,6 +5,12 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
+// ✅ Root Route — this avoids 503 error when visiting Render root URL
+app.get('/', (req, res) => {
+  res.send('✅ Currency Converter API is live');
+});
+
+// ✅ Conversion Endpoint
 app.get('/api/convert', async (req, res) => {
   const { from, to } = req.query;
 
@@ -18,12 +24,12 @@ app.get('/api/convert', async (req, res) => {
     }
 
     const rate = rates[to] / rates[from];
-    res.json({ success: true, rate }); // ✅ correct structure
+    res.json({ success: true, rate });
   } catch (err) {
     res.status(500).json({ success: false, error: "Fixer API Error" });
   }
 });
 
-
+// ✅ Server start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Backend running on port ${PORT}`));
