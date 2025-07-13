@@ -17,15 +17,13 @@ app.get('/api/convert', async (req, res) => {
       return res.status(400).json({ success: false, error: "Invalid currencies" });
     }
 
-    // Calculate conversion rate using EUR as the base
     const rate = rates[to] / rates[from];
-
-    // ✅ Send correct format expected by frontend
-    res.json({ success: true, rate });
-  } catch (error) {
-    res.status(500).json({ success: false, error: "Fixer API failed" });
+    res.json({ success: true, rate }); // ✅ correct structure
+  } catch (err) {
+    res.status(500).json({ success: false, error: "Fixer API Error" });
   }
 });
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Backend running on port ${PORT}`));
